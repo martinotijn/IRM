@@ -1,46 +1,57 @@
 import nltk
 from nltk.corpus import brown
-from nltk import Counter
 import random
-mystery = {}
-romance = {}
+
+# usage: python3 brown.py 
+
+# set seed for reproduceerbaarheid
 
 random.seed(1)
-cfd = nltk.ConditionalFreqDist( (genre, word) for genre in brown.categories() for word in brown.words(categories=genre))
-genre_word = [(genre, word) for genre in ['mystery', 'romance'] for word in brown.words(categories=genre)]
-genres = ['romance', 'mystery']
 
-modals = ['i', 'me', 'you', 'he', 'him', 'she', 'her', 'it', 'we', 'us', 'they', 'them', 'one','I', 'Me', 'You', 'He', 'Him', 'She', 'Her', 'It', 'We', 'Us', 'They', 'Them', 'One']
-sentences = brown.tagged_sents(tagset='universal', categories='romance')
-
-print(len(sentences))
-mystery = brown.sents(categories='mystery')
+sentences = brown.tagged_sents(categories='romance')
+mystery = brown.tagged_sents(categories='mystery')
 sentences_romance = []
 sentences_mystery = []
+
 for i in sentences:
-    if len(i) > 8 and len(i) < 10:
+    if len(i) > 3:
         sentences_romance.append(i)
-        
-print(len(sentences_romance))
 
 for i in mystery:
-    if len(i) > 6 and len(i) < 10:
+    if len(i) > 3:
         sentences_mystery.append(i)
+
+# select 1000 random samples
+
+random_romance = random.sample(sentences_romance, 1000)
+random_mystery = random.sample(sentences_mystery, 1000)
+
+romance_count = []
+mystery_count = []
+
+# count occurences of personal pronouns per sentence
+
+for sentence in random_romance:
+    personal_pronoun_count = 0
+    
+    for elem in sentence:
         
-print(len(sentences_mystery))
+        if 'PPS' in elem[1]:
+            personal_pronoun_count += 1
+    romance_count.append(personal_pronoun_count)
 
-random_romance = random.sample(sentences_romance, 100)
-random_mystery = random.sample(sentences_mystery, 100)
+for sentence in random_mystery:
+    personal_pronoun_count = 0
+    
+    for elem in sentence:
+        
+        if 'PPS' in elem[1]:
+            personal_pronoun_count += 1
+    mystery_count.append(personal_pronoun_count)
+    
 
-count_romance = []
-count_mystery = []
-for i in random_romance:
-    count_romance.append(sum(el in i for el in modals))
+# print the counts (vectors) to the screen
 
-for i in random_mystery:
-    print(i)
-    count_mystery.append(sum(el in i for el in modals))
+print(romance_count)
+print(mystery_count)
 
-print(sentences[0])
-
-print(count_mystery)
