@@ -4,7 +4,7 @@ import random
 
 # usage: python3 brown.py 
 
-# set seed for reproduceerbaarheid
+# set seed for reproducibility
 
 random.seed(1)
 
